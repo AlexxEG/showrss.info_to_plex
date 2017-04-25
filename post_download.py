@@ -60,6 +60,10 @@ def main():
 
     input_file = args.path
 
+    if not input_file or input_file.isspace():
+        print("Input file is null or empty")
+        return
+
     # Find the .mkv file if the arg is a folder, and check if the file exists
     if os.path.isdir(args.path):
         input_file = find_mkv_file(args.path)
