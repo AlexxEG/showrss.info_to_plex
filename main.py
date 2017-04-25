@@ -23,17 +23,17 @@ def main():
     if not os.path.isfile('history.db'):
         initialize_sqlite()
 
+    # Load config.cfg
+    global __config
+    __config = configparser.ConfigParser()
+    __config.read('config.cfg')
+
     # List of patterns from file
     patterns = get_patterns()
 
     # Get login cookie
     global __auth_cookies
     __auth_cookies = qbt_login()
-
-    # Load config.cfg
-    global __config
-    __config = configparser.ConfigParser()
-    __config.read('config.cfg')
 
     # Store processed entries and batch add them to sqlite later
     new_entries = []
