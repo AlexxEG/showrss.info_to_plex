@@ -71,8 +71,12 @@ def main():
         else:
             print("No new entries")
 
-        # Sleep for 30min
-        time.sleep(30 * 60)
+        try:
+            # Sleep for 30min
+            time.sleep(30 * 60)
+        except KeyboardInterrupt:
+            print("User Canceled")
+            break
 
     print("Exiting...")
 
