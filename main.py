@@ -148,9 +148,11 @@ def get_patterns():
     Get the patterns from config file to filter series.
     """
     filters = []
+    filters_config = configparser.ConfigParser()
+    filters_config.read('filters.cfg')
 
-    for section in __config.sections():
-        new_filter = __config[section]['Pattern']
+    for section in filters_config.sections():
+        new_filter = filters_config[section]['Pattern']
         filters.append(new_filter)
 
     return filters
