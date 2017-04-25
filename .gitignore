@@ -1,0 +1,17 @@
+# Ignore application created files
+*.cfg
+*.log
+*.sublime-*
+*.db
+
+__pycache__
+
+# Ignore testing files
+testing*
+
+# Ignore bower components
+website
+website/bower_components
+
+# Include specific .cfg file
+!config_example.cfg
