@@ -64,7 +64,7 @@ def main():
             add_to_history_many(new_entries)
 
             print()
-            print("New entres: " + str(len(new_entries)))
+            print("New entries: " + str(len(new_entries)))
 
             # Clear list before looping
             new_entries.clear()
