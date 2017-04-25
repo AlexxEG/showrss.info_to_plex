@@ -49,7 +49,7 @@ def main():
             for pattern in patterns:
                 # Process entry if it matches one of the patterns
                 if re.search(pattern, entry['title']) and is_new_entry(entry['guid']):
-                    new_entry = Entry(entry['title'], entry['guid'])
+                    new_entry = Entry(entry['guid'], entry['title'])
 
                     # Always store GUID
                     new_entries.append(new_entry)
