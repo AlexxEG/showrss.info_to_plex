@@ -10,6 +10,7 @@ import shutil
 import sqlite3
 import requests
 import io
+import time
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -48,7 +49,7 @@ def main():
 
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('path', help="the path to file or directory containing file to convert")
-    parser.add_argument('--simulate', action='store_true', help='simulate post_download')
+    parser.add_argument('--simulate', action='store_true', help='run script without making permanent changes to files')
 
     args, extra = parser.parse_known_args()
 
@@ -248,8 +249,15 @@ def ffmpeg_convert(input_file):
     my_env['FFREPORT'] = "file=ffreport.log:level=32"
 
     # Run command
-    process = subprocess.Popen(cmd, env=my_env, shell=True)
-    process.wait()
+    if not __simulate:
+        process = subprocess.Popen(cmd, env=my_env, shell=True)
+        process.wait()
+    else:
+        print("I'm pretending to be a FFmpeg process! :-D")
+        for x in range(0, 100):
+            if (x % 10 == 0):
+                print(str(x) + "%")
+            time.sleep(0.1)
 
     return output
 
@@ -258,7 +266,13 @@ def filebot_rename_file(input_file):
     """
     Renames file using FileBot
     """
-    cmd = "filebot -rename \"{0}\" --db TheTVDB --format \"{{n}} - {{s00e00}} - {{t}}\" -non-strict"
+    cmd = None
+
+    if not __simulate:
+        cmd = "filebot -rename \"{0}\" --db TheTVDB --format \"{{n}} - {{s00e00}} - {{t}}\" -non-strict"
+    else:
+        cmd = "filebot --action test -rename \"{0}\" --db TheTVDB --format \"{{n}} - {{s00e00}} - {{t}}\" -non-strict"
+
     cmd = cmd.format(input_file)
 
     process = subprocess.Popen(cmd,
@@ -345,11 +359,15 @@ def move_to_plex_library(input_file):
                                        "Season " + season.lstrip("0"))
 
     if not os.path.exists(new_location_folder):
-        os.makedirs(new_location_folder)
+        if not __simulate:
+            os.makedirs(new_location_folder)
+        else:
+            print("Creating folder: " + new_location_folder)
 
     logging.debug("Moving [" + os.path.abspath(input_file) + "] to [" + new_location + "]...")
 
-    shutil.move(os.path.abspath(input_file), new_location)
+    if not __simulate:
+        shutil.move(os.path.abspath(input_file), new_location)
 
     logging.debug("Done!")
 
