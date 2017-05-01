@@ -106,7 +106,7 @@ def main():
     refresh_plex_library()
 
     # Send email notification
-    episode_name = os.path.splitext(output)[0]
+    episode_name = os.path.basename(output)
 
     email_notification_new_episode(episode_name)
 
@@ -162,11 +162,11 @@ def email_notification_new_episode(series_name):
     msg['From'] = __config['EmailNotifier']['Email']
     msg['To'] = __config['EmailNotifier']['EmailDest']
     msg['Date'] = formatdate(localtime=True)
-    msg['Subject'] = "home-server: Downloaded new episode: {0}".format(series_name)
+    msg['Subject'] = "home-server: Downloaded new episode: {0}".format(episode_name)
 
     log_text = __output.getvalue()
 
-    text = "home-server showrss.info script\n\nDownloaded new episode: {0}\n\nLog:\n".format(series_name)
+    text = "home-server showrss.info script\n\nDownloaded new episode: {0}\n\nLog:\n".format(episode_name)
     text = text + re.sub("^(.+)$", "> \g<1>", log_text.strip(), flags=re.MULTILINE)
 
     html = """\
@@ -180,7 +180,7 @@ def email_notification_new_episode(series_name):
             {1}
         </blockquote>
     </div>
-    """.format(series_name, log_text.strip().replace('\n', '<br>'))
+    """.format(episode_name, log_text.strip().replace('\n', '<br>'))
 
     msg.attach(MIMEText(text, 'plain'))
     msg.attach(MIMEText(html, 'html'))
